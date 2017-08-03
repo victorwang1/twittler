@@ -2,7 +2,7 @@ $(document).ready(function(){
   var $body = $('body');
   $body.html('');
 
-// generate tweet
+// format tweet
   var formatTweet = function(tweet) {
     var $tweet = $('<section class="tweet"></section>');
     var $time = $('<div class="time" data-created="' + tweet.created_at + '"></div>');
@@ -35,13 +35,13 @@ $(document).ready(function(){
 
 
 // update tweet
-  var updateFeed = function() {
+  var updateFeed = function(source) {
     var feedLength = $('.tweet').length;
-    var newFeedLength = streams.home.length;
+    var newFeedLength = source.length;
 
     if (newFeedLength > feedLength) {
       for (feedLength; feedLength < newFeedLength; feedLength++) {
-        formatTweet(streams.home[feedLength]).prependTo($body);
+        formatTweet(source[feedLength]).insertBefore($('.tweet')[0]);
       }
     }
   }
@@ -53,12 +53,12 @@ $(document).ready(function(){
     });
   }
 
-  var setUpdates = function() {
-    refreshFeed = setInterval(updateFeed, 1000);
+  var setUpdates = function(feedSource) {
+    refreshFeed = setInterval(function() {updateFeed(feedSource);}, 1000);
     refreshTime = setInterval(updateTime, 10000);
   };
 
-  setUpdates();
+  setUpdates(streams.home);
 
 
 // generate user page
@@ -68,15 +68,13 @@ $(document).ready(function(){
     }
 
     var $user = $('<section id="name"> @' + userStream[0]['user'] + '</section>')
-    $user.prependTo($body);
-
     var $button = $('<div class="home">Home</div>');
+    $user.prependTo($body);
     $button.prependTo($body);
   }
 
 
 // events
-
   $('.username').hover(function() {
     $(this).toggleClass('highlight');
   });
@@ -84,13 +82,13 @@ $(document).ready(function(){
   // setup user stream
   $(document).on('click', '.username', function() {
     clearInterval(refreshFeed);
-    clearInterval(refreshTime);
+
     var userStream = streams.users[$(this).text().slice(1)];
     feedLength = userStream.length;
 
     $body.empty();
     initializeUserStream(userStream);
-
+    setUpdates(userStream);
   });
 
   $(document). on('click', '.home', function() {
