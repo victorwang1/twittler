@@ -1,18 +1,19 @@
 $(document).ready(function(){
   var $body = $('body');
   $body.html('');
+  streams.users.visitor = [];
 
 // format tweet
   var formatTweet = function(tweet) {
     var $tweet = $('<section class="tweet"></section>');
-    var $time = $('<div class="time" data-created="' + tweet.created_at + '"></div>');
+    var $time = $('<div class="time" title="' + tweet.created_at +
+                    '" data-created="' + tweet.created_at + '"></div>');
     var $userName = $('<span class="username"></span>');
 
     $tweet.text(': ' + tweet.message);
     $userName.text('@' + tweet.user);
     $userName.prependTo($tweet);
 
-    // timestamp
     $time.text(moment(tweet.created_at).fromNow());
     $time.prependTo($tweet);
 
@@ -20,7 +21,7 @@ $(document).ready(function(){
   }
 
 
-// initialize
+// initialize home stream
   var initializeHome = function() {
     var index = streams.home.length - 1;
     while(index >= 0){
@@ -30,6 +31,15 @@ $(document).ready(function(){
 
       index -= 1;
     }
+
+    var $topSection = $('<section class="top"></section>');
+    var $logo = $('<div id="logo">Twittler</div>');
+    var $newTweet = $('<div id="newTweet"></div>');
+    var $tweetButton = $('<button class="btn tweetButton">Tweet</button>');
+    $topSection.prependTo($body);
+    $logo.prependTo($topSection);
+    $tweetButton.appendTo($newTweet);
+    $newTweet.appendTo($topSection);
   }
   initializeHome();
 
@@ -66,8 +76,7 @@ $(document).ready(function(){
     for (var tweet of userStream) {
       formatTweet(tweet).prependTo($body);
     }
-
-    var $user = $('<section id="name"> @' + userStream[0]['user'] + '</section>')
+    var $user = $('<section id="name"> @' + userStream[0]['user'] + '</section>');
     var $button = $('<div class="home">Home</div>');
     $user.prependTo($body);
     $button.prependTo($body);
@@ -75,26 +84,69 @@ $(document).ready(function(){
 
 
 // events
-  $('.username').hover(function() {
+  $(document).on('mouseenter', '.username, .home', function() {
     $(this).toggleClass('highlight');
+  });
+
+  $(document).on('mouseenter', '.btn', function() {
+    $(this).toggleClass('background-highlight');
+  });
+
+  $(document).on('mouseleave', '.username, .home, .btn', function() {
+    $(this).removeClass('highlight');
+    $(this).removeClass('background-highlight');
+  });
+
+  $(document).on('click', '.tweetButton', function(){
+    if ($('#tweetForm').length === 0) {
+      var $tweetForm = $('<div id="tweetForm">@Visitor<br>' +
+                            '<textarea name="tweetText" cols="40" rows="5"></textarea><br>' +
+                            '<button class="btn" id="send">send</button>' +
+                            '</div>');
+      $tweetForm.insertAfter($(this));
+      $(this).attr('id', 'toggled');
+
+    } else {
+      $('#tweetForm').remove();
+      $(this).removeAttr('id');
+    }
+  });
+
+  // tweet as visitor
+
+  var postTweet = function() {
+    var message = $('textarea').val();
+    writeTweet(message);
+    updateFeed(streams.home);
+
+    $('#tweetForm').remove();
+    $('.tweetButton').removeAttr('id');
+  }
+
+  $(document).on('click', '#send', function(){
+    postTweet();
+  });
+
+  $(document).on('keyup', function(key) {
+    if(key.which === 13) {
+      postTweet();
+    }
   });
 
   // setup user stream
   $(document).on('click', '.username', function() {
     clearInterval(refreshFeed);
-
     var userStream = streams.users[$(this).text().slice(1)];
-    feedLength = userStream.length;
-
     $body.empty();
     initializeUserStream(userStream);
     setUpdates(userStream);
   });
 
+  // re-initialize home stream
   $(document). on('click', '.home', function() {
-    feedLength = streams.home.length;
+    clearInterval(refreshFeed);
     $body.empty();
     initializeHome();
-    setUpdates();
+    setUpdates(streams.home);
   })
 });

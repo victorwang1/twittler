@@ -1,0 +1,149 @@
+/* overall elements */
+html {
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+  color: #34495E;
+  background-color: #E4F1FE;
+}
+
+body {
+  margin-top: 5%;
+  margin-bottom: 10%;
+}
+
+/* home stream elements */
+.top {
+  float: left;
+  position: fixed;
+}
+
+.btn {
+  background-color: #8DC6FF;
+  border: 0;
+  cursor: pointer;
+  color: white;
+  outline: 0;
+  font-weight: bold;
+}
+
+/* new tweet elements */
+#newTweet {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 50%;
+
+}
+
+.tweetButton {
+  position: fixed;
+  right: 5%;
+  width: 100px;
+  height: 45px;
+  font-size: 1.1em;
+  border-radius: 0 0 20px 20px;
+}
+
+#tweetForm {
+  position: fixed;
+  top: 45px;
+  right: 5%;
+  padding: 20px;
+  border-radius: 20px 0 20px 20px;
+  font-size: 1em;
+  font-weight: bold;
+  background-color: #DCDCDC;
+}
+
+#tweetForm textarea {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  resize: none;
+  border: none;
+  outline: none;
+  font-size: 1em;
+}
+
+#tweetForm button {
+  float: right;
+  width: 100px;
+  height: 30px;
+  font-size: 0.8em;
+  border-radius: 5px;
+}
+
+
+/* individual tweets */
+.tweet {
+  border-bottom: solid;
+  border-width: thin;
+  width: 50%;
+  margin-right: 5%;
+  float: right;
+  padding: 1em;
+}
+
+.time {
+  margin-bottom: 0.5em;
+  cursor: default;
+}
+
+.username {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#logo {
+  font-size: 3em;
+  font-weight: bold;
+  margin-left: 1em;
+  margin-top: 0.2em;
+}
+
+/* user stream */
+
+.home {
+  font-weight: bold;
+  margin-left: 5%;
+  cursor: pointer;
+  float: left;
+  position: fixed;
+  z-index: 1;
+}
+
+#name {
+  font-size: 2em;
+  font-weight: bold;
+  position: fixed;
+  padding-left: 1em;
+  padding-top: 1em;
+}
+
+
+/* events */
+
+.highlight {
+  color: #8DC6FF;
+}
+
+.background-highlight {
+  background-color: #DCDCDC;
+}
+
+#toggled {
+  border-radius: 0;
+  background-color: #DCDCDC;
+}
+
+/* clear fix */
+.group:before,
+.group:after {
+  content: "";
+  display: table;
+}
+.group:after {
+  clear: both;
+}
+.group {
+  zoom: 1; /* For IE 6/7 (trigger hasLayout) */
+}
